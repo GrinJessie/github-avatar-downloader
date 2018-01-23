@@ -14,42 +14,41 @@ var getRepoContributors = function(repoOwner, repoName, cb){
       url: 'https://api.github.com/repos/' + repoOwner + '/' + repoName + '/contributors',
       headers: {
         'User-Agent': 'GrinJessie',
-        'Authorization':token.GITHUB_TOKEN
-        }
-      };
+        'Authorization': token.GITHUB_TOKEN
+      }
+    };
     request(options, function(err, res, body){
-      cb (err, body);
+      cb(err, body);
     });
   }
 };
 
 var downloadImageByURL = function(urls, filePath){
- for (i = 0; i < urls.length; i++) {
-  var options = {
-    url: urls[i],
-    headers: {
-      'User-Agent': 'GrinJessie',
-      'Authorization':token.GITHUB_TOKEN
+  for (i = 0; i < urls.length; i++) {
+    var options = {
+      url: urls[i],
+      headers: {
+        'User-Agent': 'GrinJessie',
+        'Authorization': token.GITHUB_TOKEN
       }
     };
-  request(options)
-    .on('err', function(err){
-      throw err;
-    })
-    .pipe(fs.createWriteStream(filePath[i]));
- }
+    request(options)
+      .on('err', function(err){
+        throw err;
+      })
+      .pipe(fs.createWriteStream(filePath[i]));
+  }
 };
 
-
-getRepoContributors (repoOwner, repoName, function(err, result) {
+getRepoContributors(repoOwner, repoName, function(err, result) {
   console.log("Errors:", err);
-  result = JSON.parse(result);
+  var data = JSON.parse(result);
   var urlList = [];
   var filePath = [];
-  result.forEach(function(obj){
+  data.forEach(function(obj){
     urlList.push(obj.avatar_url);
     filePath.push('avatars/' + obj.login + '.jpg');
   });
   downloadImageByURL(urlList, filePath);
-})
+});
 
