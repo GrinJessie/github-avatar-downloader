@@ -14,13 +14,18 @@ var getRepoContributors = function(repoOwner, repoName, cb){
     }
   };
   request(options, function(err, res, body){
-    cb(err, body);
+    cb (err, body);
   });
 };
 
 
 getRepoContributors ("jquery", "jquery", function(err, result) {
   console.log("Errors:", err);
-  console.log("Result:", result);
+  result = JSON.parse(result);
+  var data = [];
+  result.forEach(function(obj){
+    data.push(obj.avatar_url);
+  });
+  console.log("Result:", data);
 })
 
