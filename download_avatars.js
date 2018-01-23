@@ -7,16 +7,20 @@ var repoName = process.argv[3];
 console.log('Welcome to the GitHub Avatar Downloader!');
 
 var getRepoContributors = function(repoOwner, repoName, cb){
-  var options = {
-    url: 'https://api.github.com/repos/' + repoOwner + '/' + repoName + '/contributors',
-    headers: {
-      'User-Agent': 'GrinJessie',
-      'Authorization':token.GITHUB_TOKEN
-    }
-  };
-  request(options, function(err, res, body){
-    cb (err, body);
-  });
+  if(!repoOwner || !repoName) {
+    console.log('please enter repoOwner and repoName to proceed!');
+  } else {
+    var options = {
+      url: 'https://api.github.com/repos/' + repoOwner + '/' + repoName + '/contributors',
+      headers: {
+        'User-Agent': 'GrinJessie',
+        'Authorization':token.GITHUB_TOKEN
+        }
+      };
+    request(options, function(err, res, body){
+      cb (err, body);
+    });
+  }
 };
 
 var downloadImageByURL = function(urls, filePath){
