@@ -19,9 +19,10 @@ var getRepoContributors = function(repoOwner, repoName, cb){
   });
 };
 
-var downloadImageByURL = function(url, filePath){
+var downloadImageByURL = function(urls, filePath){
+ for (i = 0; i < urls.length; i++) {
   var options = {
-    url: url,
+    url: urls[i],
     headers: {
       'User-Agent': 'GrinJessie',
       'Authorization':token.GITHUB_TOKEN
@@ -31,19 +32,20 @@ var downloadImageByURL = function(url, filePath){
     .on('err', function(err){
       throw err;
     })
-    .pipe(fs.createWriteStream(filePath));
+    .pipe(fs.createWriteStream(filePath[i]));
+ }
 };
 
-downloadImageByURL('https://avatars3.githubusercontent.com/u/192451?v=4', 'avatars/kvirani.jpg');
 
-// getRepoContributors ("jquery", "jquery", function(err, result) {
-//   console.log("Errors:", err);
-//   result = JSON.parse(result);
-//   var data = [];
-//   result.forEach(function(obj){
-//     data.push(obj.avatar_url);
-//   });
-//   downloadImageByURL(data);
-//   // console.log("Result:", data);
-// })
+getRepoContributors ("jquery", "jquery", function(err, result) {
+  console.log("Errors:", err);
+  result = JSON.parse(result);
+  var urlList = [];
+  var filePath = [];
+  result.forEach(function(obj){
+    urlList.push(obj.avatar_url);
+    filePath.push('avatars/' + obj.login + '.jpg');
+  });
+  downloadImageByURL(urlList, filePath);
+})
 
